@@ -16,6 +16,10 @@ class CanvasManager {
         this.ctx.clearRect(0, 0, this.width, this.height);
     }
 
+    clear() {
+        this.ctx.clearRect(0, 0, this.width, this.height);
+    }
+
     /**
      * @param {Vector} v
      */

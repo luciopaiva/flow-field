@@ -28,9 +28,12 @@ class WindMapApp {
         this.lastTimestamp = timestamp;
 
         this.engine.update(dt);
+
+        this.canvas.clear();
         for (const particle of this.engine.getParticles()) {
             this.canvas.drawParticle(particle.position);
         }
+
         this.fpsStat.update(timestamp);
 
         window.requestAnimationFrame(this.update.bind(this));
