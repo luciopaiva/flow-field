@@ -8,8 +8,10 @@ class WindMapApp {
         this.height = Math.round(this.width / WindMapApp.ASPECT_RATIO);
 
         this.canvas = new CanvasManager('wind-map', this.width, this.height);
-        this.engine = new WindEngine(100, WindMapApp.ASPECT_RATIO);
-        this.fpsStat = new FpsStat(fps => console.info(fps));
+        this.engine = new WindEngine(WindEngine.DEFAULT_NUM_PARTICLES, WindMapApp.ASPECT_RATIO);
+
+        this.fpsElement = document.getElementById('fps');
+        this.fpsStat = new FpsStat(fps => this.fpsElement.innerText = fps + ' FPS');
 
         window.requestAnimationFrame((timestamp) => {
             this.lastTimestamp = timestamp;
@@ -26,7 +28,9 @@ class WindMapApp {
         this.lastTimestamp = timestamp;
 
         this.engine.update(dt);
-        this.canvas.draw();
+        for (const particle of this.engine.getParticles()) {
+            this.canvas.drawParticle(particle.position);
+        }
         this.fpsStat.update(timestamp);
 
         window.requestAnimationFrame(this.update.bind(this));

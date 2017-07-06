@@ -7,7 +7,12 @@
 body {
     font-family: Verdana, sans-serif;
     margin: 0;
-    color: #555;
+    color: #d6d6d6;
+    background-color: #555;
+}
+
+a, a:visited, a:hover {
+    color: #a6cdf7;
 }
 
 hr {
@@ -19,12 +24,6 @@ hr {
 #page-container {
     width: var(--app-width);
     margin: 0 auto;  /* https://css-tricks.com/centering-css-complete-guide */
-}
-
-#page-container > div {
-    /*box-sizing: border-box;*/
-    /*padding-left: 20px;*/
-    /*padding-right: 20px;*/
 }
 
 #page-header h1 {
@@ -40,11 +39,19 @@ hr {
 #wind-map {
     margin: 0 auto;
     display: block;
-    border: 1px solid #ccc;
+    border: 1px solid #676767;
 }
 
 #page-footer {
     text-align: right;
     margin-top: var(--margin);
     font-size: 12px;
+}
+
+#fps {
+    float: left;
+}
+
+#credits {
+    float: right;
 }
