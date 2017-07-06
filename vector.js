@@ -14,28 +14,30 @@ class Vector {
             const v = args[0];
             this.x = v.x;
             this.y = v.y;
-            this.z = v.z;
-        } else if (args.length < 4) {
-            const [x, y, z] = args;
+        } else if (args.length === 2) {
+            const [x, y] = args;
             this.x = x;
             this.y = y;
-            this.z = z ? z : 0;
         } else {
             throw new Error('Invalid number of arguments');
         }
     }
 
+    copy(v) {
+        this.x = v.x;
+        this.y = v.y;
+        return this;
+    }
+
     add(v) {
         this.x += v.x;
         this.y += v.y;
-        this.z += v.z;
         return this;
     }
 
     subtract(v) {
         this.x -= v.x;
         this.y -= v.y;
-        this.z -= v.z;
         return this;
     }
 
@@ -43,11 +45,9 @@ class Vector {
         if (v instanceof Vector) {
             this.x *= v.x;
             this.y *= v.y;
-            this.z *= v.z;
         } else {
             this.x *= v;
             this.y *= v;
-            this.z *= v;
         }
         return this;
     }
@@ -56,11 +56,9 @@ class Vector {
         if (v instanceof Vector) {
             this.x /= v.x;
             this.y /= v.y;
-            this.z /= v.z;
         } else {
             this.x /= v;
             this.y /= v;
-            this.z /= v;
         }
         return this;
     }
@@ -68,19 +66,11 @@ class Vector {
     negative() {
         this.x *= -1;
         this.y *= -1;
-        this.z *= -1;
-        return this;
-    }
-
-    cross(v) {
-        this.x = this.y * v.z - this.z * v.y;
-        this.y = this.z * v.x - this.x * v.z;
-        this.z = this.x * v.y - this.y * v.x;
         return this;
     }
 
     dot(v) {
-        return this.x * v.x + this.y * v.y + this.z * v.z;
+        return this.x * v.x + this.y * v.y;
     }
 
     unit() {

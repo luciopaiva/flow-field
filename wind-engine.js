@@ -8,12 +8,18 @@ class WindEngine {
         this.worldWidth = 1;
         this.worldHeight = 1 / worldAspectRatio;
 
+        this.auxVector = new Vector(0, 0);
+
         /** @type {WindParticle[]} */
         this.particles = new Array(this.numParticles);
+
         for (let i = 0; i < this.numParticles; i++) {
             const x = Math.random() * this.worldWidth;
             const y = Math.random() * this.worldHeight;
-            this.particles[i] = new WindParticle(new Vector(x, y), new Vector(1, 0));
+            const vmag = Math.random() < 0.5 ? 0.01 : 0.02;  // magnitude of 1 means 100% of the canvas in 1 second
+            const vx = vmag;
+            const vy = -vmag;
+            this.particles[i] = new WindParticle(new Vector(x, y), new Vector(vx, vy));
         }
     }
 
@@ -24,9 +30,9 @@ class WindEngine {
     }
 
     update(dt) {
-        const dv = new Vector(.0001, -.0001);
         for (const particle of this.particles) {
-            particle.position.add(dv);
+            this.auxVector.copy(particle.velocity).multiply(dt / 1000);
+            particle.position.add(this.auxVector);
 
             // wrap particle around horizontal axis
             if (particle.position.x > this.worldWidth) {
