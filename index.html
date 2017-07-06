@@ -10,6 +10,7 @@
     <script src="vector.js"></script>
     <script src="wind-particle.js"></script>
     <script src="wind-engine.js"></script>
+    <script src="svg-manager.js"></script>
     <script src="canvas-manager.js"></script>
     <script src="index.js" defer></script>
 </head>
@@ -21,6 +22,17 @@
     </div>
     <div id="canvas-container">
         <canvas id="wind-map"></canvas>
+        <svg id="flow-field">
+            <defs>
+                <marker id="arrow-head" orient="auto" markerWidth="4" markerHeight="6" refX="0.0" refY="3">
+                    <path d="M0,0 V6 L4,3 Z"></path>
+                </marker>
+            </defs>
+
+            <g class="field-arrow hidden" transform="translate(100,100)">
+                <path class="field-arrow-path" marker-end="url(#arrow-head)" d="M0,0 L16,0"></path>
+            </g>
+        </svg>
     </div>
     <div id="page-footer">
         <span id="fps">60 FPS</span>

@@ -21,6 +21,10 @@ hr {
     background-color: #ccc;
 }
 
+.hidden {
+    display: none;
+}
+
 #page-container {
     width: var(--app-width);
     margin: 0 auto;  /* https://css-tricks.com/centering-css-complete-guide */
@@ -40,6 +44,18 @@ hr {
     margin: 0 auto;
     display: block;
     border: 1px solid #676767;
+    z-index: 2;
+}
+
+#flow-field {
+    margin: 0 auto;
+    display: block;
+    border: 1px solid #676767;
+
+    /* move right behind canvas element */
+    position: absolute;
+    transform: translateY(-100%);
+    z-index: 1;
 }
 
 #page-footer {
@@ -54,4 +70,14 @@ hr {
 
 #credits {
     float: right;
+}
+
+.field-arrow-path {
+    stroke: rgba(0, 0, 0, .5);
+    stroke-width: 2;
+    fill: none;
+}
+
+#arrow-head path {
+    fill: rgba(0, 0, 0, .5);
 }
