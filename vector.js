@@ -23,24 +23,44 @@ class Vector {
         }
     }
 
+    /**
+     * Copies v into this vector.
+     * @param {Vector} v
+     * @return {Vector} returns itself so it can be chained
+     */
     copy(v) {
         this.x = v.x;
         this.y = v.y;
         return this;
     }
 
+    /**
+     * Adds v to this vector (modifies this vector).
+     * @param {Vector|number} v
+     * @return {Vector} returns itself so it can be chained
+     */
     add(v) {
         this.x += v.x;
         this.y += v.y;
         return this;
     }
 
+    /**
+     * Subtracts v from this vector (modifies this vector).
+     * @param {Vector|number} v
+     * @return {Vector} returns itself so it can be chained
+     */
     subtract(v) {
         this.x -= v.x;
         this.y -= v.y;
         return this;
     }
 
+    /**
+     * Multiplies this vector by v, which can be a vector or a scalar (modifies this vector).
+     * @param {Vector|number} v
+     * @return {Vector} returns itself so it can be chained
+     */
     multiply(v) {
         if (v instanceof Vector) {
             this.x *= v.x;
@@ -52,6 +72,11 @@ class Vector {
         return this;
     }
 
+    /**
+     * Divides this vector by v, which can be a vector or a scalar (modifies this vector).
+     * @param {Vector|number} v
+     * @return {Vector} returns itself so it can be chained
+     */
     divide(v) {
         if (v instanceof Vector) {
             this.x /= v.x;
@@ -63,21 +88,65 @@ class Vector {
         return this;
     }
 
+    /**
+     * Invert this vector.
+     * @return {Vector} returns itself so it can be chained
+     */
     negative() {
         this.x *= -1;
         this.y *= -1;
         return this;
     }
 
+    /**
+     * Dot-product between this vector and v.
+     * @param {Vector} v
+     * @return {number}
+     */
     dot(v) {
         return this.x * v.x + this.y * v.y;
     }
 
+    /**
+     * Cross-product between this vector and v.
+     * @param {Vector} v
+     * @return {number}
+     */
+    cross(v) {
+        return this.x * v.y - this.y * v.x;
+    }
+
+    /**
+     * Returns the equivalent unit vector. Creates a new vector, not modifying the original one.
+     * @return {Vector}
+     */
     unit() {
         return (new Vector(this)).divide(this.length());
     }
 
+    /**
+     * A scalar representing the length of the vector (a.k.a. magnitude).
+     * @return {number}
+     */
     length() {
         return Math.sqrt(this.dot(this));
+    }
+
+    /**
+     * Returns the angle between this vector and v, in radians.
+     * @param {Vector} v - the other vector
+     * @return {number} angle in radians
+     */
+    angle(v) {
+        return Math.atan2(this.cross(v), this.dot(v));
+    }
+
+    /**
+     * Returns the angle between this vector and v, in degrees.
+     * @param {Vector} v - the other vector
+     * @return {number} angle in degrees
+     */
+    angleInDegrees(v) {
+        return this.angle(v) * 180 / Math.PI;
     }
 }

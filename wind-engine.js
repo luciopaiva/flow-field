@@ -11,7 +11,7 @@ class WindEngine {
         this.auxVector = new Vector(0, 0);
 
         // arrow field
-        this.fieldGridSize = 0.025;
+        this.fieldGridSize = this.worldWidth / 40;
         this.gridWidth = Math.ceil(this.worldWidth / this.fieldGridSize);
         this.gridHeight = Math.ceil(this.worldHeight / this.fieldGridSize);
         /** @type {Vector[]} */
