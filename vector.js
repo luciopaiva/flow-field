@@ -24,6 +24,18 @@ class Vector {
     }
 
     /**
+     * Sets this vector's coordinates.
+     * @param {Vector} x
+     * @param {Vector} y
+     * @return {Vector} returns itself so it can be chained
+     */
+    set(x, y) {
+        this.x = x;
+        this.y = y;
+        return this;
+    }
+
+    /**
      * Copies v into this vector.
      * @param {Vector} v
      * @return {Vector} returns itself so it can be chained

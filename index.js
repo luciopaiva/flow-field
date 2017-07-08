@@ -26,8 +26,9 @@ class WindMapApp {
         }
         flowFieldSvg.addEventListener('mousemove', (event) => this.onMouseMove(event));
 
-        this.previousOffsetX = 0;
-        this.previousOffsetY = 0;
+        this.mouseMovePreviousVector = new Vector(0, 0);
+        this.mouseMoveDiffVector = new Vector(0, 0);
+        this.mouseMoveBaseVector = new Vector(1, 0);
 
         this.fpsElement = document.getElementById('fps');
         this.fpsStat = new FpsStat(fps => this.fpsElement.innerText = fps + ' FPS');
@@ -59,12 +60,12 @@ class WindMapApp {
     }
 
     onMouseMove(event) {
-        const u = new Vector(1, 0);
-        const v = new Vector(event.offsetX - this.previousOffsetX, event.offsetY - this.previousOffsetY);
-        this.previousOffsetX = event.offsetX;
-        this.previousOffsetY = event.offsetY;
-        console.info(v.angleInDegrees(u));
-        // console.info([event.offsetX, event.offsetY]);
+        this.mouseMoveDiffVector.set(event.offsetX, event.offsetY).subtract(this.mouseMovePreviousVector);
+        if (this.mouseMoveDiffVector.length() >= 10) {
+            const angle = this.mouseMoveDiffVector.angleInDegrees(this.mouseMoveBaseVector);
+            console.info(angle);
+            this.mouseMovePreviousVector.set(event.offsetX, event.offsetY);
+        }
     }
 }
 
