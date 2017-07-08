@@ -10,18 +10,6 @@ class WindEngine {
 
         this.auxVector = new Vector(0, 0);
 
-        // arrow field
-        this.fieldGridSize = this.worldWidth / 40;
-        this.gridWidth = Math.ceil(this.worldWidth / this.fieldGridSize);
-        this.gridHeight = Math.ceil(this.worldHeight / this.fieldGridSize);
-        /** @type {Vector[]} */
-        this.flowField = new Array(this.gridWidth * this.gridHeight);
-        for (let i = 0; i < this.gridHeight; i++) {
-            for (let j = 0; j < this.gridWidth; j++) {
-                this.flowField[i * this.gridWidth + j] = new Vector(this.fieldGridSize * j, this.fieldGridSize * i);
-            }
-        }
-
         /** @type {WindParticle[]} */
         this.particles = new Array(this.numParticles);
 
