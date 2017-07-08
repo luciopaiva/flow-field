@@ -25,11 +25,17 @@ class SvgHelper {
      * @param {number} x
      * @param {number} y
      * @param {number} angle
+     * @return {Node}
      */
     static cloneElement(template, x, y, angle) {
         const arrowElement = template.cloneNode(true);
-        arrowElement.setAttribute('transform', `translate(${x},${y}),rotate(${angle})`);
+        SvgHelper.transform(arrowElement, x, y, angle);
         arrowElement.classList.remove('hidden');
         template.parentNode.appendChild(arrowElement);
+        return arrowElement;
+    }
+
+    static transform(node, x, y, angle) {
+        node.setAttribute('transform', `translate(${x},${y}),rotate(${angle})`);
     }
 }
