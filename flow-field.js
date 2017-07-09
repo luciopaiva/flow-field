@@ -16,24 +16,28 @@ class FlowField {
         this.flowFieldSvg = SvgHelper.resize(elementId, width, height);
         const templateArrow = this.flowFieldSvg.querySelector('.field-arrow');
 
-        const BASE = new Vector(1, 0);  // base vector for angle calculation
-        const EAST = new Vector(1, 0);  // vectors start pointing East by default
+        this.BASE_VECTOR = new Vector(1, 0);  // base vector for angle calculation
+        this.EAST_VECTOR = new Vector(1, 0);  // vectors start pointing East by default
 
-        /** @type {Vector[]} */
+        /** @type {{vector: Vector, svgX: number, svgY: number, node: Node}[]} */
         this.field = new Array(this.gridWidth * this.gridHeight);
-        /** @type {Map<number, Node>} */
-        this.elementByArrowIndex = new Map();
 
         // initialize all vectors to point east
         for (let ri = 0; ri < this.gridHeight; ri++) {
             for (let ci = 0; ci < this.gridWidth; ci++) {
-                const index = ri * this.gridWidth + ci;
-                this.field[index] = new Vector(EAST);
+                const index = this.fieldCoordinatesToIndex(ci, ri);
+                const [svgX, svgY] = this.fieldToSvgCoordinates(ci, ri);
 
                 // render an equivalent arrow in the SVG element
-                const [x, y] = this.fieldToSvgCoordinates(ci, ri);
-                const angle = BASE.angleInDegrees(EAST);
-                this.elementByArrowIndex.set(index, SvgHelper.cloneElement(templateArrow, x, y, angle));
+                const angle = this.BASE_VECTOR.angleInDegrees(this.EAST_VECTOR);
+                const node = SvgHelper.cloneElement(templateArrow, svgX, svgY, angle);
+
+                this.field[index] = {
+                    vector: new Vector(this.EAST_VECTOR),
+                    svgX,
+                    svgY,
+                    node
+                };
             }
         }
 
@@ -41,9 +45,9 @@ class FlowField {
         document.addEventListener('keydown', (event) => this.onKeyChange(event));
         document.addEventListener('keyup', (event) => this.onKeyChange(event));
 
+        // auxiliary flow field editing vectors
         this.mouseMovePreviousVector = new Vector(0, 0);
         this.mouseMoveDiffVector = new Vector(0, 0);
-        this.mouseMoveBaseVector = new Vector(1, 0);
 
     }
 
@@ -56,8 +60,8 @@ class FlowField {
         return [1 + Math.floor((x + 0.5) / this.fieldGridSizeInPixels), 1 + Math.floor((y + 0.5) / this.fieldGridSizeInPixels)];
     }
 
-    getArrowElementByFieldCoordinate(x, y) {
-        return this.elementByArrowIndex.get(y * this.gridWidth + x);
+    fieldCoordinatesToIndex(x, y) {
+        return y * this.gridWidth + x;
     }
 
     onKeyChange(event) {
@@ -72,11 +76,14 @@ class FlowField {
 
         // has to have some distance from first sample point to acquire enough resolution for the angle being computed
         if (event.shiftKey && this.mouseMoveDiffVector.length() >= 10) {
-            const [x, y] = this.svgToFieldCoordinates(event.offsetX, event.offsetY);
-            const [svgX, svgY] = this.fieldToSvgCoordinates(x, y);
-            const arrow = this.getArrowElementByFieldCoordinate(x, y);
-            const angle = this.mouseMoveDiffVector.angleInDegrees(this.mouseMoveBaseVector);
-            SvgHelper.transform(arrow, svgX, svgY, -angle);
+            const arrowIndex = this.fieldCoordinatesToIndex(...this.svgToFieldCoordinates(event.offsetX, event.offsetY));
+
+            const angle = -this.mouseMoveDiffVector.angleInDegrees(this.BASE_VECTOR);
+
+            // ToDo enlarge brush size and do this for each arrow affected
+            const arrow = this.field[arrowIndex];
+            SvgHelper.transform(arrow.node, arrow.svgX, arrow.svgY, angle);
+
             this.mouseMovePreviousVector.set(event.offsetX, event.offsetY);
         }
     }
