@@ -44,7 +44,7 @@ hr {
     margin: 0 auto;
     display: block;
     border: 1px solid #676767;
-    z-index: 2;
+    z-index: 1;
 }
 
 #flow-field {
@@ -55,7 +55,7 @@ hr {
     /* move right behind canvas element */
     position: absolute;
     transform: translateY(-100%);
-    z-index: 1;
+    z-index: 2;
 }
 
 #page-footer {
@@ -72,7 +72,7 @@ hr {
     float: right;
 }
 
-.field-arrow-path {
+#arrow path {
     stroke: rgba(0, 0, 0, .5);
     stroke-width: 2;
     fill: none;

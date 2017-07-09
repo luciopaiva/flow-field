@@ -60,6 +60,8 @@ class FlowField {
 
     onMouseMove(event) {
         this.mouseMoveDiffVector.set(event.offsetX, event.offsetY).subtract(this.mouseMovePreviousVector);
+
+        // has to have some distance from first sample point to acquire enough resolution for the angle being computed
         if (this.mouseMoveDiffVector.length() >= 10) {
             const [x, y] = this.svgToFieldCoordinates(event.offsetX, event.offsetY);
             const [svgX, svgY] = this.fieldToSvgCoordinates(x, y);
