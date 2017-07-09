@@ -56,6 +56,10 @@ hr {
     position: absolute;
     transform: translateY(-100%);
     z-index: 2;
+
+    /* to nicely fade-in/out when field-editing mode is toggled */
+    opacity: 0;
+    transition: opacity 0.3s;
 }
 
 #page-footer {

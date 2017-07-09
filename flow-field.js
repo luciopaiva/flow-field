@@ -13,8 +13,8 @@ class FlowField {
         this.gridWidth = Math.ceil(this.fieldWidth / this.fieldGridSize) + 2;
         this.gridHeight = Math.ceil(this.fieldHeight / this.fieldGridSize) + 2;
 
-        const flowFieldSvg = SvgHelper.resize(elementId, width, height);
-        const templateArrow = flowFieldSvg.querySelector('.field-arrow');
+        this.flowFieldSvg = SvgHelper.resize(elementId, width, height);
+        const templateArrow = this.flowFieldSvg.querySelector('.field-arrow');
 
         const BASE = new Vector(1, 0);  // base vector for angle calculation
         const EAST = new Vector(1, 0);  // vectors start pointing East by default
@@ -37,7 +37,9 @@ class FlowField {
             }
         }
 
-        flowFieldSvg.addEventListener('mousemove', (event) => this.onMouseMove(event));
+        this.flowFieldSvg.addEventListener('mousemove', (event) => this.onMouseMove(event));
+        document.addEventListener('keydown', (event) => this.onKeyChange(event));
+        document.addEventListener('keyup', (event) => this.onKeyChange(event));
 
         this.mouseMovePreviousVector = new Vector(0, 0);
         this.mouseMoveDiffVector = new Vector(0, 0);
@@ -58,11 +60,18 @@ class FlowField {
         return this.elementByArrowIndex.get(y * this.gridWidth + x);
     }
 
+    onKeyChange(event) {
+        if (event.key === 'Shift') {
+            // fade flow field in/out according to shift key state
+            this.flowFieldSvg.style.opacity = event.shiftKey ? 1 : 0;
+        }
+    }
+
     onMouseMove(event) {
         this.mouseMoveDiffVector.set(event.offsetX, event.offsetY).subtract(this.mouseMovePreviousVector);
 
         // has to have some distance from first sample point to acquire enough resolution for the angle being computed
-        if (this.mouseMoveDiffVector.length() >= 10) {
+        if (event.shiftKey && this.mouseMoveDiffVector.length() >= 10) {
             const [x, y] = this.svgToFieldCoordinates(event.offsetX, event.offsetY);
             const [svgX, svgY] = this.fieldToSvgCoordinates(x, y);
             const arrow = this.getArrowElementByFieldCoordinate(x, y);
