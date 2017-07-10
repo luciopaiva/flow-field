@@ -22,6 +22,7 @@ class FlowField {
 
         this.BASE_VECTOR = new Vector(1, 0);  // base vector for angle calculation
         this.EAST_VECTOR = new Vector(1, 0);  // vectors start pointing East by default
+        this.NORTH_VECTOR = new Vector(0, -1);  // vectors start pointing East by default
 
         /** @type {{vector: Vector, svgX: number, svgY: number, node: Node}[]} */
         this.field = new Array(this.gridWidth * this.gridHeight);
@@ -134,6 +135,7 @@ class FlowField {
             case 'r': return this.randomField();
             case 'e': return this.eastField();
             case 'w': return this.westField();
+            case 'c': return this.fieldCenter();
         }
     }
 
@@ -184,6 +186,23 @@ class FlowField {
     westField() {
         for (const arrow of this.field) {
             this.updateFieldArrow(arrow, Math.PI);
+        }
+    }
+
+    fieldCenter() {
+        const centerX = Math.round(this.gridWidth / 2);
+        const centerY = Math.round(this.gridHeight / 2);
+        const center = new Vector(centerX, centerY);
+        const pVec = new Vector(0, 0);
+
+        for (let ri = 0; ri < this.gridHeight; ri++) {
+            for (let ci = 0; ci < this.gridWidth; ci++) {
+                const angle = center.set(centerX, centerY).subtract(pVec.set(ci, ri)).angle(this.NORTH_VECTOR);
+                // const angle = pVec.set(ci, ri).subtract(center)
+                const arrowIndex = this.fieldCoordinatesToIndex(ci, ri);
+                const arrow = this.field[arrowIndex];
+                this.updateFieldArrow(arrow, angle);
+            }
         }
     }
 
