@@ -13,18 +13,19 @@ class Particle {
         this.initialVelocity = velocity;
         this.maxVelocity = maxVelocity;
         this.acceleration = new Vector(0, 0);
-        this.reset();
+        this.reset(velocity);
     }
 
-    reset() {
+    reset(desiredVelocity) {
         this.position = new Vector(this.initialPosition);
-        this.velocity = new Vector(this.initialVelocity);
+        this.initialVelocity.set(desiredVelocity);
+        this.velocity = this.initialVelocity;
         this.timeToLive = Math.floor(Math.random() * Particle.INITIAL_TTL);
     }
 
-    update() {
+    update(desiredVelocity) {
         if (--this.timeToLive <= 0) {
-            this.reset();
+            this.reset(desiredVelocity);
         }
     }
 }

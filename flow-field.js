@@ -52,6 +52,7 @@ class FlowField {
         this.flowFieldSvg.addEventListener('mousemove', (event) => this.onMouseMove(event));
         document.addEventListener('keydown', (event) => this.onKeyChange(event));
         document.addEventListener('keyup', (event) => this.onKeyChange(event));
+        document.addEventListener('keypress', (event) => this.onCommand(event));
 
         // auxiliary vectors
         this.mouseMovePreviousVector = new Vector(0, 0);
@@ -126,6 +127,16 @@ class FlowField {
         return y * this.gridWidth + x;
     }
 
+    onCommand(event) {
+        const key = event.key.toLowerCase();
+
+        switch (key) {
+            case 'r': return this.randomField();
+            case 'e': return this.eastField();
+            case 'w': return this.westField();
+        }
+    }
+
     onKeyChange(event) {
         if (event.key === 'Shift') {
             // fade flow field in/out according to shift key state
@@ -144,12 +155,35 @@ class FlowField {
 
                 // ToDo enlarge brush size and do this for each arrow affected
                 const arrow = this.field[arrowIndex];
-                const angleInDegrees = angle * (180 / Math.PI);
-                arrow.vector.set(Math.cos(angle), Math.sin(angle));
-                SvgHelper.transform(arrow.node, arrow.svgX, arrow.svgY, angleInDegrees,
-                    this.rotationCenter.x, this.rotationCenter.y);
+                this.updateFieldArrow(arrow, angle);
                 this.mouseMovePreviousVector.set(event.offsetX, event.offsetY);
             }
+        }
+    }
+
+    updateFieldArrow(arrow, angle) {
+        arrow.vector.setFromAngle(angle);
+        const angleInDegrees = angle * (180 / Math.PI);
+        SvgHelper.transform(arrow.node, arrow.svgX, arrow.svgY, angleInDegrees,
+            this.rotationCenter.x, this.rotationCenter.y);
+    }
+
+    randomField() {
+        const TWO_PI = Math.PI * 2;
+        for (const arrow of this.field) {
+            this.updateFieldArrow(arrow, Math.random() * TWO_PI);
+        }
+    }
+
+    eastField() {
+        for (const arrow of this.field) {
+            this.updateFieldArrow(arrow, 0);
+        }
+    }
+
+    westField() {
+        for (const arrow of this.field) {
+            this.updateFieldArrow(arrow, Math.PI);
         }
     }
 

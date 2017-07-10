@@ -46,6 +46,11 @@ class Vector {
         return this;
     }
 
+    setFromAngle(angleInRadians) {
+        this.x = Math.cos(angleInRadians);
+        this.y = Math.sin(angleInRadians);
+    }
+
     /**
      * Copies v into this vector.
      * @param {Vector} v
