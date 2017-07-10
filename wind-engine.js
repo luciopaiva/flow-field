@@ -41,16 +41,16 @@ class WindEngine {
     update(dt) {
         // ToDo make particles steer more gracefully
         for (const particle of this.particles) {
+            particle.update();
+
             // calculate desired acceleration vector based on flow field
-            this.flowField.query(particle.position, this.desiredAcceleration);
+            this.flowField.queryBilinear(particle.position, this.desiredAcceleration);
             this.desiredAcceleration.multiply(particle.maxVelocity);
 
             // steer
-            this.desiredAcceleration.subtract(particle.velocity).limit(particle.maxVelocity);
+            const steerEaseFactor = 0.05;  // otherwise particles will steer too abruptly
+            this.desiredAcceleration.subtract(particle.velocity).limit(particle.maxVelocity * steerEaseFactor);
             particle.acceleration.add(this.desiredAcceleration);
-
-            // this.aux2.copy(particle.velocity).multiply(dt / 1000);
-            // particle.position.add(this.desiredAcceleration.multiply(dt / 10000));
 
             // update particle position
             particle.velocity.add(particle.acceleration).limit(particle.maxVelocity);

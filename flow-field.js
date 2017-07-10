@@ -8,7 +8,7 @@ class FlowField {
         this.fieldHeight = height / width;
 
         // arrow field
-        this.fieldGridSize = this.fieldWidth / 40;
+        this.fieldGridSize = this.fieldWidth / FlowField.WIDTH_IN_GRID_CELLS;
         this.fieldGridSizeInPixels = this.fieldGridSize * scale;
         // console.info(`Grid size is ${this.fieldGridSizeInPixels} pixels`);
         this.rotationCenter = new Vector(this.fieldGridSizeInPixels / 2, this.fieldGridSizeInPixels / 2);
@@ -53,9 +53,23 @@ class FlowField {
         document.addEventListener('keydown', (event) => this.onKeyChange(event));
         document.addEventListener('keyup', (event) => this.onKeyChange(event));
 
-        // auxiliary flow field editing vectors
+        // auxiliary vectors
         this.mouseMovePreviousVector = new Vector(0, 0);
         this.mouseMoveDiffVector = new Vector(0, 0);
+        this.queryAux = new Vector(0, 0);
+    }
+
+    /**
+     * Query field vector at `point`, returning the result in `result`. Takes into account the nearest field vector.
+     *
+     * @param {Vector} point
+     * @param {Vector} result
+     */
+    querySimple(point, result) {
+        const index = this.fieldCoordinatesToIndex(
+            Math.floor(this.gridWidth * point.x),
+            Math.floor(this.gridWidth * point.y));
+        result.set(this.field[index].vector);
     }
 
     /**
@@ -65,31 +79,36 @@ class FlowField {
      * @param {Vector} point
      * @param {Vector} result
      */
-    query(point, result) {
-        const index = this.fieldCoordinatesToIndex(
-            Math.floor(this.gridWidth * point.x),
-            Math.floor(this.gridWidth * point.y));
-        result.set(this.field[index].vector);
+    queryBilinear(point, result) {
+        const x = point.x;
+        const y = point.y;
 
-        // const x = point.x;
-        // const y = point.y;
-        //
-        // const fieldCoordLoX = Math.floor((this.gridWidth - 1) * x);
-        // const fieldCoordHiX = Math.ceil((this.gridWidth - 1) * x);
-        // const fieldCoordLoY = Math.floor((this.gridHeight - 1) * y);
-        // const fieldCoordHiY = Math.ceil((this.gridHeight - 1) * y);
-        //
-        // const topLeft = this.fieldCoordinatesToIndex(fieldCoordLoX, fieldCoordLoY);
-        // const topRight = this.fieldCoordinatesToIndex(fieldCoordHiX, fieldCoordLoY);
-        // const bottomRight = this.fieldCoordinatesToIndex(fieldCoordHiX, fieldCoordHiY);
-        // const bottomLeft = this.fieldCoordinatesToIndex(fieldCoordLoX, fieldCoordHiY);
-        //
-        // result.clear()
-        //     .add(this.field[topLeft].vector)
-        //     .add(this.field[topRight].vector)
-        //     .add(this.field[bottomRight].vector)
-        //     .add(this.field[bottomLeft].vector)
-        //     .normalize();
+        const gridX = this.gridWidth * x;
+        const gridY = this.gridWidth * y;
+
+        // get vectors at surrounding corners
+        const fieldCoordLoX = Math.floor(gridX);
+        const fieldCoordLoY = Math.floor(gridY);
+        const fieldCoordHiX = fieldCoordLoX + 1;
+        const fieldCoordHiY = fieldCoordLoY + 1;
+
+        // // query position relative to surrounding corners
+        // const dx = gridX - fieldCoordLoX / this.fieldGridSize;
+        // const dy = gridY - fieldCoordLoY / this.fieldGridSize;
+
+        // field array indices
+        const topLeft = this.fieldCoordinatesToIndex(fieldCoordLoX, fieldCoordLoY);
+        const topRight = this.fieldCoordinatesToIndex(fieldCoordHiX, fieldCoordLoY);
+        const bottomRight = this.fieldCoordinatesToIndex(fieldCoordHiX, fieldCoordHiY);
+        const bottomLeft = this.fieldCoordinatesToIndex(fieldCoordLoX, fieldCoordHiY);
+
+        // ToDo must calculate weighted average to be a real bilinear interpolation
+        result.clear()
+            .add(this.queryAux.copy(this.field[topLeft].vector))
+            .add(this.queryAux.copy(this.field[topRight].vector))
+            .add(this.queryAux.copy(this.field[bottomRight].vector))
+            .add(this.queryAux.copy(this.field[bottomLeft].vector))
+            .normalize();
     }
 
     fieldToSvgCoordinates(x, y) {
@@ -102,6 +121,8 @@ class FlowField {
     }
 
     fieldCoordinatesToIndex(x, y) {
+        if (x >= this.gridWidth) { x -= this.gridWidth; }
+        if (y >= this.gridHeight) { y -= this.gridHeight; }
         return y * this.gridWidth + x;
     }
 
@@ -118,17 +139,17 @@ class FlowField {
         // has to have some distance from first sample point to acquire enough resolution for the angle being computed
         if (event.shiftKey && this.mouseMoveDiffVector.length() >= 10) {
             const arrowIndex = this.fieldCoordinatesToIndex(...this.svgToFieldCoordinates(event.offsetX, event.offsetY));
+            if (arrowIndex >= 0) {  // sometimes it gets negative! still don't know why
+                const angle = -this.mouseMoveDiffVector.angle(this.BASE_VECTOR);
 
-            const angle = -this.mouseMoveDiffVector.angle(this.BASE_VECTOR);
-
-            // ToDo enlarge brush size and do this for each arrow affected
-            const arrow = this.field[arrowIndex];
-            const angleInDegrees = angle * (180 / Math.PI);
-            arrow.vector.set(Math.cos(angle), Math.sin(angle));
-            SvgHelper.transform(arrow.node, arrow.svgX, arrow.svgY, angleInDegrees,
-                this.rotationCenter.x, this.rotationCenter.y);
-
-            this.mouseMovePreviousVector.set(event.offsetX, event.offsetY);
+                // ToDo enlarge brush size and do this for each arrow affected
+                const arrow = this.field[arrowIndex];
+                const angleInDegrees = angle * (180 / Math.PI);
+                arrow.vector.set(Math.cos(angle), Math.sin(angle));
+                SvgHelper.transform(arrow.node, arrow.svgX, arrow.svgY, angleInDegrees,
+                    this.rotationCenter.x, this.rotationCenter.y);
+                this.mouseMovePreviousVector.set(event.offsetX, event.offsetY);
+            }
         }
     }
 
