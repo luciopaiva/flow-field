@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Wind Map</title>
+    <title>flow field</title>
 
-    <link rel="stylesheet" href="wind-map.css">
+    <link rel="stylesheet" href="flow-field.css">
 
     <script src="fps-stat.js"></script>
     <script src="vector.js"></script>
-    <script src="wind-particle.js"></script>
-    <script src="wind-engine.js"></script>
+    <script src="particle.js"></script>
+    <script src="flow-engine.js"></script>
     <script src="svg-helper.js"></script>
     <script src="svg-path.js"></script>
     <script src="canvas-manager.js"></script>
@@ -20,10 +20,10 @@
 
 <div id="page-container">
     <div id="page-header">
-        <h1>wind map</h1>
+        <h1>flow field</h1>
     </div>
     <div id="canvas-container">
-        <canvas id="wind-map"></canvas>
+        <canvas id="flow-map"></canvas>
         <svg id="flow-field">
             <defs>
                 <marker id="arrow-head" orient="auto" markerWidth="4" markerHeight="6" refX="0.0" refY="3">
@@ -43,9 +43,7 @@
     <div id="page-footer">
         <span id="fps">60 FPS</span>
         <span id="credits">
-        Made by <a href="http://luciopaiva.com">Lucio Paiva</a> and heavily inspired by
-        <a href="https://earth.nullschool.net">this project</a>, which was in turn inspired by
-        <a href="http://hint.fm/wind/">this another one</a>.
+        Made by <a href="http://luciopaiva.com">Lucio Paiva</a> - July 2017
         </span>
     </div>
 </div>

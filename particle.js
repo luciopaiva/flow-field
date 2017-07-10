@@ -1,7 +1,7 @@
 "use strict";
 
 
-class WindParticle {
+class Particle {
 
     /**
      * @param {Vector} position
@@ -19,7 +19,7 @@ class WindParticle {
     reset() {
         this.position = new Vector(this.initialPosition);
         this.velocity = new Vector(this.initialVelocity);
-        this.timeToLive = Math.floor(Math.random() * WindParticle.INITIAL_TTL);
+        this.timeToLive = Math.floor(Math.random() * Particle.INITIAL_TTL);
     }
 
     update() {
@@ -29,4 +29,4 @@ class WindParticle {
     }
 }
 
-WindParticle.INITIAL_TTL = 100;
+Particle.INITIAL_TTL = 100;

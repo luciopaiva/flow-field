@@ -1,14 +1,14 @@
 "use strict";
 
 
-class WindEngine {
+class FlowEngine {
 
     /**
      * @param {FlowField} flowField
      * @param {number} numParticles
      * @param {number} worldAspectRatio
      */
-    constructor (flowField, numParticles = WindEngine.DEFAULT_NUM_PARTICLES, worldAspectRatio = 16 / 9) {
+    constructor (flowField, numParticles = FlowEngine.DEFAULT_NUM_PARTICLES, worldAspectRatio = 16 / 9) {
         this.flowField = flowField;
         this.numParticles = numParticles;
         this.worldWidth = 1;
@@ -18,7 +18,7 @@ class WindEngine {
         this.desiredAcceleration = new Vector(0, 0);
         this.resultingVelocity = new Vector(0, 0);
 
-        /** @type {WindParticle[]} */
+        /** @type {Particle[]} */
         this.particles = new Array(this.numParticles);
 
         // particles
@@ -28,7 +28,7 @@ class WindEngine {
             const maxVelocity = Math.random() < 0.5 ? 0.05 : 0.10;  // mag of 1 means the whole canvas width in 1 second
             const vx = maxVelocity;
             const vy = 0;
-            this.particles[i] = new WindParticle(new Vector(x, y), new Vector(vx, vy), maxVelocity);
+            this.particles[i] = new Particle(new Vector(x, y), new Vector(vx, vy), maxVelocity);
         }
     }
 
@@ -81,4 +81,4 @@ class WindEngine {
     }
 }
 
-WindEngine.DEFAULT_NUM_PARTICLES = 10000;
+FlowEngine.DEFAULT_NUM_PARTICLES = 10000;
