@@ -23,15 +23,26 @@ class Vector {
         }
     }
 
+    clear() {
+        this.x = 0;
+        this.y = 0;
+        return this;
+    }
+
     /**
      * Sets this vector's coordinates.
-     * @param {Vector} x
-     * @param {Vector} y
+     * @param {number|Vector} x
+     * @param {number?} y
      * @return {Vector} returns itself so it can be chained
      */
     set(x, y) {
-        this.x = x;
-        this.y = y;
+        if (x instanceof Vector) {
+            this.x = x.x;
+            this.y = x.y;
+        } else {
+            this.x = x;
+            this.y = y;
+        }
         return this;
     }
 
@@ -129,11 +140,24 @@ class Vector {
     }
 
     /**
-     * Returns the equivalent unit vector. Creates a new vector, not modifying the original one.
-     * @return {Vector}
+     * Transforms the vector into its equivalent unit vector.
+     * @return {Vector} returns itself so it can be chained
      */
-    unit() {
-        return (new Vector(this)).divide(this.length());
+    normalize() {
+        return this.divide(this.length());
+    }
+
+    /**
+     * Limit vector magnitude to a maximum `value`.
+     * @param {number} value
+     * @return {Vector} returns itself so it can be chained
+     */
+    limit(value) {
+        const magnitude = this.length();
+        if (magnitude > value) {
+            this.multiply(value / magnitude);
+        }
+        return this;
     }
 
     /**

@@ -1,6 +1,6 @@
 
 :root {
-    --app-width: 1024px;  /* dictates the final size of the canvas */
+    --app-width: 1000px;  /* dictates the final size of the canvas */
     --margin: 10px;
 }
 
@@ -84,4 +84,13 @@ hr {
 
 #arrow-head path {
     fill: rgba(0, 0, 0, .5);
+}
+
+#debug-grid path {
+    stroke: yellow;
+}
+
+#debug-grid text {
+    font-size: 9px;
+    fill: yellow;
 }

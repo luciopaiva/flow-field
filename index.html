@@ -11,6 +11,7 @@
     <script src="wind-particle.js"></script>
     <script src="wind-engine.js"></script>
     <script src="svg-helper.js"></script>
+    <script src="svg-path.js"></script>
     <script src="canvas-manager.js"></script>
     <script src="flow-field.js"></script>
     <script src="index.js" defer></script>
@@ -28,8 +29,9 @@
                 <marker id="arrow-head" orient="auto" markerWidth="4" markerHeight="6" refX="0.0" refY="3">
                     <path d="M0,0 V6 L4,3 Z"></path>
                 </marker>
+                <!-- arrow size is 20x6, grid size is 25x25 -->
                 <symbol id="arrow" overflow="visible"> <!-- https://stackoverflow.com/a/19981903/778272 -->
-                    <path marker-end="url(#arrow-head)" d="M0,0 L16,0"></path>
+                    <path marker-end="url(#arrow-head)" d="M0,12.5 L16,12.5"></path>
                 </symbol>
             </defs>
 

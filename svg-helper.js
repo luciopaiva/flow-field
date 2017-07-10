@@ -3,6 +3,18 @@
 
 class SvgHelper {
 
+    static createElement(tagName, attributes, value) {
+        const elem = document.createElementNS('http://www.w3.org/2000/svg', tagName);
+        if (attributes) {
+            Object.keys(attributes).forEach(attributeName => elem.setAttribute(attributeName, attributes[attributeName]));
+        }
+        if (value) {
+            const textNode = document.createTextNode(value);
+            elem.appendChild(textNode);
+        }
+        return elem;
+    }
+
     /**
      * Sets SVG width and height.
      *
@@ -19,23 +31,18 @@ class SvgHelper {
     }
 
     /**
-     * Clones element `template` as a new sibling element at the specified [x, y] coordinate.
+     * Clones element `template`.
      *
      * @param {Element} template
-     * @param {number} x
-     * @param {number} y
-     * @param {number} angle
      * @return {Node}
      */
-    static cloneElement(template, x, y, angle) {
+    static cloneElement(template) {
         const arrowElement = template.cloneNode(true);
-        SvgHelper.transform(arrowElement, x, y, angle);
         arrowElement.classList.remove('hidden');
-        template.parentNode.appendChild(arrowElement);
         return arrowElement;
     }
 
-    static transform(node, x, y, angle) {
-        node.setAttribute('transform', `translate(${x},${y}),rotate(${angle})`);
+    static transform(node, x, y, angle, rotationX = 0, rotationY = 0) {
+        node.setAttribute('transform', `translate(${x},${y}),rotate(${angle} ${rotationX} ${rotationY})`);
     }
 }

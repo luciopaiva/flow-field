@@ -8,11 +8,11 @@ class WindMapApp {
         this.width = this.scale;
         this.height = Math.round(this.scale / WindMapApp.ASPECT_RATIO);
 
-        this.windEngine = new WindEngine(WindEngine.DEFAULT_NUM_PARTICLES, WindMapApp.ASPECT_RATIO);
+        this.flowField = new FlowField('flow-field', this.width, this.height, this.scale);
+
+        this.windEngine = new WindEngine(this.flowField, WindEngine.DEFAULT_NUM_PARTICLES, WindMapApp.ASPECT_RATIO);
 
         this.canvasManager = new CanvasManager('wind-map', this.width, this.height);
-
-        this.flowField = new FlowField('flow-field', this.width, this.height, this.scale);
 
         this.fpsElement = document.getElementById('fps');
         this.fpsStat = new FpsStat(fps => this.fpsElement.innerText = fps + ' FPS');
@@ -44,6 +44,6 @@ class WindMapApp {
     }
 }
 
-WindMapApp.ASPECT_RATIO = 16 / 9;
+WindMapApp.ASPECT_RATIO = FlowField.WIDTH_IN_GRID_CELLS / 22;  // originally 16:9, but adjusted so the grid fits nicely
 
 new WindMapApp();
