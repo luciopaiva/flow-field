@@ -31,14 +31,16 @@ class FlowFieldApp {
         const dt = timestamp - this.lastTimestamp;
         this.lastTimestamp = timestamp;
 
-        this.flowEngine.update(dt);
+        if (dt < 200) {  // avoid huge deltas; they might break the simulation by sending particles way off bounds
+            this.flowEngine.update(dt);
 
-        this.canvasManager.clear();
-        for (const particle of this.flowEngine.getParticles()) {
-            this.canvasManager.drawParticle(particle.position);
+            this.canvasManager.clear();
+            for (const particle of this.flowEngine.getParticles()) {
+                this.canvasManager.drawParticle(particle.position);
+            }
+
+            this.fpsStat.update(timestamp);
         }
-
-        this.fpsStat.update(timestamp);
 
         window.requestAnimationFrame(this.update.bind(this));
     }
