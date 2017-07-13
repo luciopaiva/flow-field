@@ -12,7 +12,7 @@ class FlowFieldApp {
 
         this.flowEngine = new FlowEngine(this.flowField, FlowEngine.DEFAULT_NUM_PARTICLES, FlowFieldApp.ASPECT_RATIO);
 
-        this.canvasManager = new CanvasManager('flow-map', this.width, this.height);
+        this.canvasManager = new CanvasManager('flow-map', this.width, this.height, CanvasManager.RENDER_MODE_LINES);
 
         this.fpsElement = document.getElementById('fps');
         this.fpsStat = new FpsStat(fps => this.fpsElement.innerText = fps + ' FPS');
