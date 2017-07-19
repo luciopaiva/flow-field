@@ -50,9 +50,9 @@ class FlowField {
         }
         this.flowFieldSvg.appendChild(groupArrows);
 
+        this.flowFieldSvg.addEventListener('mouseover', () => this.onMouseOver());
+        this.flowFieldSvg.addEventListener('mouseout', () => this.onMouseOut());
         this.flowFieldSvg.addEventListener('mousemove', (event) => this.onMouseMove(event));
-        document.addEventListener('keydown', (event) => this.onKeyChange(event));
-        document.addEventListener('keyup', (event) => this.onKeyChange(event));
         document.addEventListener('keypress', (event) => this.onCommand(event));
 
         // auxiliary vectors
@@ -135,22 +135,27 @@ class FlowField {
             case 'r': return this.randomField();
             case 'e': return this.eastField();
             case 'w': return this.westField();
-            case 'c': return this.fieldCenter();
+            case 'x': return this.fieldX();
         }
     }
 
-    onKeyChange(event) {
-        if (event.key === 'Shift') {
-            // fade flow field in/out according to shift key state
-            this.flowFieldSvg.style.opacity = event.shiftKey ? 1 : 0;
-        }
+    onMouseOver() {
+        this.flowFieldSvg.style.opacity = 1;
+    }
+
+    onMouseOut() {
+        this.flowFieldSvg.style.opacity = 0;
     }
 
     onMouseMove(event) {
+        if (event.buttons === 0) {
+            return;
+        }
+
         this.mouseMoveDiffVector.set(event.offsetX, event.offsetY).subtract(this.mouseMovePreviousVector);
 
         // has to have some distance from first sample point to acquire enough resolution for the angle being computed
-        if (event.shiftKey && this.mouseMoveDiffVector.length() >= 10) {
+        if (this.mouseMoveDiffVector.length() >= 10) {
             const arrowIndex = this.fieldCoordinatesToIndex(...this.svgToFieldCoordinates(event.offsetX, event.offsetY));
             if (arrowIndex >= 0) {  // sometimes it gets negative! still don't know why
                 const angle = -this.mouseMoveDiffVector.angle(this.BASE_VECTOR);
@@ -189,7 +194,7 @@ class FlowField {
         }
     }
 
-    fieldCenter() {
+    fieldX() {
         const centerX = Math.round(this.gridWidth / 2);
         const centerY = Math.round(this.gridHeight / 2);
         const center = new Vector(centerX, centerY);

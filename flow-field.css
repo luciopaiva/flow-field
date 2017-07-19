@@ -93,13 +93,13 @@ kbd {
 }
 
 #arrow path {
-    stroke: rgba(0, 0, 0, .5);
+    stroke: rgba(125, 205, 255, 0.3);
     stroke-width: 2;
     fill: none;
 }
 
 #arrow-head path {
-    fill: rgba(0, 0, 0, .5);
+    fill: rgba(125, 205, 255, 0.3);
 }
 
 #debug-grid path {
