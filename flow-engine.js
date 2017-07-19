@@ -23,13 +23,9 @@ class FlowEngine {
 
         // particles
         for (let i = 0; i < this.numParticles; i++) {
-            const x = Math.random() * this.worldWidth;
-            const y = Math.random() * this.worldHeight;
-            const maxVelocity = Math.random() < 0.5 ? 0.05 : 0.10;  // mag of 1 means the whole canvas width in 1 second
-            const position = new Vector(x, y);
-            const velocity = new Vector(0, 0);
-            this.flowField.queryBilinear(position, velocity);
-            this.particles[i] = new Particle(position, velocity, maxVelocity);
+            const maxVelocityScalar = Math.random() < 0.5 ? 0.05 : 0.10;  // mag of 1 means the whole canvas width in 1 second
+            this.particles[i] = new Particle(maxVelocityScalar, this.worldWidth, this.worldHeight);
+            this.flowField.queryBilinear(this.particles[i].position, this.particles[i].velocity);
         }
     }
 
@@ -42,11 +38,16 @@ class FlowEngine {
     update(dt) {
         // ToDo make particles steer more gracefully
         for (const particle of this.particles) {
+            // check if particle completed its life cycle and reset position accordingly
+            const wasParticleReborn = particle.checkTimeToLive();
+
             // calculate desired acceleration vector based on flow field
             this.flowField.queryBilinear(particle.position, this.desiredAcceleration);
             this.desiredAcceleration.multiply(particle.maxVelocity);
 
-            particle.update(this.desiredAcceleration);
+            if (wasParticleReborn) {
+                particle.resetVelocity(this.desiredAcceleration);
+            }
 
             // steer
             const steerEaseFactor = 0.05;  // otherwise particles will steer too abruptly
