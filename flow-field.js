@@ -59,6 +59,8 @@ class FlowField {
         this.mouseMovePreviousVector = new Vector(0, 0);
         this.mouseMoveDiffVector = new Vector(0, 0);
         this.queryAux = new Vector(0, 0);
+
+        this.randomField();
     }
 
     /**
